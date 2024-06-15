@@ -19,11 +19,11 @@ func GetEvents(ctx *gin.Context) {
 }
 
 func GetEvent(ctx *gin.Context) {
-	eventId, err := strconv.ParseInt(ctx.Param("id"), 10, 64) 
+	eventId, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse event ID"})
 		return
-	}	
+	}
 	event, err := models.GetEventByID(eventId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Could not get event"})
@@ -57,11 +57,11 @@ func CreateEvent(ctx *gin.Context) {
 }
 
 func UpdateEvent(ctx *gin.Context) {
-	eventId, err := strconv.ParseInt(ctx.Param("id"), 10, 64) 
+	eventId, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse event ID"})
 		return
-	}	
+	}
 	_, err = models.GetEventByID(eventId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Could not get event"})
@@ -88,11 +88,11 @@ func UpdateEvent(ctx *gin.Context) {
 }
 
 func DeleteEvent(ctx *gin.Context) {
-	eventId, err := strconv.ParseInt(ctx.Param("id"), 10, 64) 
+	eventId, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse event ID"})
 		return
-	}	
+	}
 	event, err := models.GetEventByID(eventId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch event"})
@@ -106,5 +106,5 @@ func DeleteEvent(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"message": "Event deleted successfully"})
-	
+
 }
