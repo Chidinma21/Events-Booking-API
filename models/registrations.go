@@ -7,10 +7,10 @@ import (
 )
 
 type Registration struct {
-	ID int64 `json:"id"`
-	UserID int64 `json:"user_id" binding:"required"`
+	ID      int64 `json:"id"`
+	UserID  int64 `json:"user_id" binding:"required"`
 	EventID int64 `json:"event_id" binding:"required"`
-} 
+}
 
 func (r Registration) Save() error {
 	query := `INSERT INTO registrations(user_id, event_id) VALUES (?, ?)`
@@ -31,7 +31,7 @@ func (r Registration) Save() error {
 }
 
 func (r Registration) CancelRegistration() error {
-	query := `DELETE FROM registrations WHERE user_id = ? AND event_id = ?` 
+	query := `DELETE FROM registrations WHERE user_id = ? AND event_id = ?`
 	stmt, err := db.DB.Prepare(query)
 
 	if err != nil {

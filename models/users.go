@@ -47,9 +47,9 @@ func (u *User) ValidateCredentials() error {
 	if err != nil {
 		return errors.New("credentials invalid")
 	}
-	
+
 	valid := utils.ComparePassword(u.Password, retrievedPassword)
-	if !valid { 
+	if !valid {
 		return errors.New("credentials invalid")
 	}
 

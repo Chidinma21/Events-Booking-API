@@ -22,8 +22,8 @@ func Register(ctx *gin.Context) {
 		return
 	}
 
-	registration := models.Registration{  
-		UserID: userId,
+	registration := models.Registration{
+		UserID:  userId,
 		EventID: eventId,
 	}
 
@@ -44,8 +44,8 @@ func Cancel(ctx *gin.Context) {
 		return
 	}
 
-	registration := models.Registration{  
-		UserID: userId,
+	registration := models.Registration{
+		UserID:  userId,
 		EventID: eventId,
 	}
 

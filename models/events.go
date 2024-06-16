@@ -1,8 +1,9 @@
 package models
 
 import (
-	"github.com/Chidinma21/Events-Booking-API/db"
 	"time"
+
+	"github.com/Chidinma21/Events-Booking-API/db"
 )
 
 type Event struct {

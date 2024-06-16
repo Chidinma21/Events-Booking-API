@@ -84,7 +84,7 @@ func UpdateEvent(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "not authorized to update this event"})
 		return
 	}
-	
+
 	err = updatedEvent.Update()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "could not update event"})
