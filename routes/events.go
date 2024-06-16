@@ -1,12 +1,10 @@
 package routes
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/Chidinma21/Events-Booking-API/models"
-	"github.com/Chidinma21/Events-Booking-API/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,30 +32,17 @@ func GetEvent(ctx *gin.Context) {
 }
 
 func CreateEvent(ctx *gin.Context) {
-	token := ctx.Request.Header.Get("Authorization")
-	if token == "" {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized - No token provided"})
-		return
-	}
-	err := utils.VerifyToken(token)
-
-	if err != nil {
-		fmt.Println(err)
-		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
-		return
-	}
-
-
 	var event models.Event
-	err = ctx.ShouldBindJSON(&event)
+	err := ctx.ShouldBindJSON(&event)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "could not parse request data"})
 		return
 	}
 
-	event.ID = 1
-	event.UserID = 1
+	userId := ctx.GetInt64("userId")
+
+	event.UserID = userId
 
 	err = event.Save()
 
@@ -71,12 +56,14 @@ func CreateEvent(ctx *gin.Context) {
 }
 
 func UpdateEvent(ctx *gin.Context) {
+	userId := ctx.GetInt64("userId")
+
 	eventId, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse event ID"})
 		return
 	}
-	_, err = models.GetEventByID(eventId)
+	event, err := models.GetEventByID(eventId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Could not get event"})
 		return
@@ -92,6 +79,12 @@ func UpdateEvent(ctx *gin.Context) {
 	}
 
 	updatedEvent.ID = eventId
+
+	if userId != event.UserID {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "not authorized to update this event"})
+		return
+	}
+	
 	err = updatedEvent.Update()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "could not update event"})
@@ -102,6 +95,7 @@ func UpdateEvent(ctx *gin.Context) {
 }
 
 func DeleteEvent(ctx *gin.Context) {
+	userId := ctx.GetInt64("userId")
 	eventId, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse event ID"})
@@ -110,6 +104,11 @@ func DeleteEvent(ctx *gin.Context) {
 	event, err := models.GetEventByID(eventId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch event"})
+		return
+	}
+
+	if userId != event.UserID {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "not authorized to delete this event"})
 		return
 	}
 
