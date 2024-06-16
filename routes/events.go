@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/Chidinma21/Events-Booking-API/models"
+	"github.com/Chidinma21/Events-Booking-API/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,11 +34,24 @@ func GetEvent(ctx *gin.Context) {
 }
 
 func CreateEvent(ctx *gin.Context) {
-	var event models.Event
-	err := ctx.ShouldBindJSON(&event)
+	token := ctx.Request.Header.Get("Authorization")
+	if token == "" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized - No token provided"})
+		return
+	}
+	err := utils.VerifyToken(token)
 
 	if err != nil {
 		fmt.Println(err)
+		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+
+
+	var event models.Event
+	err = ctx.ShouldBindJSON(&event)
+
+	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "could not parse request data"})
 		return
 	}
